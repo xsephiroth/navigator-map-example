@@ -1,23 +1,10 @@
-import logo from './logo.svg';
-import './App.css';
+import NavigatorMap from './components/NavigatorMap';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavigatorMap src="https://pic2.zhimg.com/v2-98d09c1c99edda82d74ec70fc82bd7bd_b.jpg"></NavigatorMap>
+      {/* <NavigatorMap src="https://p1.pstatp.com/large/pgc-image/6599dea9667440b7872dbf49bc55f96f"></NavigatorMap> */}
     </div>
   );
 }
