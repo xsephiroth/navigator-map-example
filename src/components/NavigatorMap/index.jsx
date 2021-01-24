@@ -127,6 +127,4 @@ const NavigatorMap = ({ src, children, onPositionSelect }) => {
   );
 };
 
-NavigatorMap.Image = Image;
-
 export default NavigatorMap;
