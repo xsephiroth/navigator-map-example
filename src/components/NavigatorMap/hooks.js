@@ -12,7 +12,7 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
       const mapImg = mapImgRef.current;
       if (!mapImg) return;
 
-      const { clientX: x, clientY: y } = e;
+      const { clientX: x, clientY: y } = e.touches ? e.touches[0] : e;
       dragBasePosition.current = {
         x,
         y,
@@ -25,6 +25,7 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
       });
 
       document.addEventListener('mousemove', handleDragMove);
+      document.addEventListener('touchmove', handleDragMove);
     };
 
     const handleDragEnd = () => {
@@ -34,6 +35,7 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
       };
 
       document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('touchmove', handleDragMove);
     };
 
     const handleDragMove = (e) => {
@@ -46,7 +48,7 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
       if (!base.x) return;
 
       // 计算基于基坐标的移动值
-      const { clientX: x, clientY: y } = e;
+      const { clientX: x, clientY: y } = e.touches ? e.touches[0] : e;
       const offsetX = x - base.x;
       const offsetY = y - base.y;
 
@@ -62,11 +64,15 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
     };
 
     container.addEventListener('mousedown', handleDragStart);
+    container.addEventListener('touchstart', handleDragStart);
     document.addEventListener('mouseup', handleDragEnd);
+    document.addEventListener('touchend', handleDragEnd);
 
     return () => {
       container.removeEventListener('mousedown', handleDragStart);
+      container.removeEventListener('touchstart', handleDragStart);
       document.removeEventListener('mouseup', handleDragEnd);
+      document.removeEventListener('touchend', handleDragEnd);
     };
   }, [containerRef, mapImgRef, setMapPosition]);
 };
