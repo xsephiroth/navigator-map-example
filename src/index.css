@@ -4,12 +4,12 @@ body {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  min-height: 200vh;
   background-color: #2e2e2e;
 }
 
 .App {
+  margin-top: 5vh;
   width: 50vw;
   height: 50vh;
 }

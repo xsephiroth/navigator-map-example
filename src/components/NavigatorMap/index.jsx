@@ -23,6 +23,8 @@ const NavigatorMap = ({ src, children }) => {
 
   // 鼠标滚轮缩放
   const onWheel = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     const isScaleUp = e.deltaY < 0;
     setScale((prevScale) =>
       isScaleUp ? Math.min(prevScale + 0.1, 2) : Math.max(prevScale - 0.1, 0.1)
@@ -56,6 +58,7 @@ const NavigatorMap = ({ src, children }) => {
         backgroundColor: '#7e7e7e',
         overflow: 'hidden',
         userSelect: 'none',
+        touchAction: 'none',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
