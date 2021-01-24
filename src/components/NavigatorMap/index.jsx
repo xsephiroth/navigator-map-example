@@ -1,4 +1,5 @@
 import { useState, useRef, forwardRef } from 'react';
+import { useDrag } from './hooks';
 
 const MapImg = forwardRef(({ src, onLoad, ...props }, ref) => {
   const handleOnLoad = (e) => {
@@ -18,8 +19,9 @@ const NavigatorMap = ({ src, children }) => {
   });
   const containerRef = useRef();
   const mapImgRef = useRef();
-  const dragBasePosition = useRef({ x: null, y: null });
+  useDrag(containerRef, mapImgRef, setMapPosition);
 
+  // 鼠标滚轮缩放
   const onWheel = (e) => {
     const isScaleUp = e.deltaY < 0;
     setScale((prevScale) =>
@@ -27,6 +29,7 @@ const NavigatorMap = ({ src, children }) => {
     );
   };
 
+  // 加载地图完成时计算缩放，将地图图片缩小或以原始大小显示在容器中
   const onMapImgLoad = ({ width: mw, height: mh }) => {
     const container = containerRef.current;
     const { clientWidth: cw, clientHeight: ch } = container;
@@ -45,56 +48,6 @@ const NavigatorMap = ({ src, children }) => {
     setScale(Math.min(scaleTo, 1));
   };
 
-  const handleDragStart = (e) => {
-    // 未载入地图图片时不处理
-    const mapImg = mapImgRef.current;
-    if (!mapImg) return;
-
-    const { clientX: x, clientY: y } = e;
-    dragBasePosition.current = {
-      x,
-      y,
-    };
-
-    // 同步当前的地图图片的position
-    setMapPosition({
-      x: mapImg.offsetLeft,
-      y: mapImg.offsetTop,
-    });
-  };
-
-  const handleDragEnd = () => {
-    dragBasePosition.current = {
-      x: null,
-      y: null,
-    };
-  };
-
-  const handleDragMove = (e) => {
-    // 地图需加载完成
-    const mapImg = mapImgRef.current;
-    if (!mapImg) return;
-
-    // 需要基坐标
-    const base = dragBasePosition.current;
-    if (!base.x) return;
-
-    // 计算基于基坐标的移动值
-    const { clientX: x, clientY: y } = e;
-    const offsetX = x - base.x;
-    const offsetY = y - base.y;
-
-    // 更新地图图片position
-    setMapPosition((prev) => ({
-      x: prev.x + offsetX,
-      y: prev.y + offsetY,
-    }));
-
-    // 更新基坐标用于下次计算移动值
-    base.x = x;
-    base.y = y;
-  };
-
   return (
     <div
       style={{
@@ -110,9 +63,6 @@ const NavigatorMap = ({ src, children }) => {
       }}
       ref={containerRef}
       onWheel={onWheel}
-      onMouseDown={handleDragStart}
-      onMouseUp={handleDragEnd}
-      onMouseMove={handleDragMove}
     >
       <MapImg
         src={src}
