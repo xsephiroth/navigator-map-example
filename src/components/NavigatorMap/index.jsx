@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef } from 'react';
+import { useState, useRef } from 'react';
 import { useDrag, useWheelScale } from './hooks';
 
 export const RobotIcon = ({ position = {} }) => {
@@ -27,21 +27,11 @@ export const RobotIcon = ({ position = {} }) => {
       <path
         d="m345.44 248.29l-194.29 194.28c-12.359 12.365-32.397 12.365-44.75 0-12.354-12.354-12.354-32.391 0-44.744l171.91-171.91-171.91-171.9c-12.354-12.359-12.354-32.394 0-44.748 12.354-12.359 32.391-12.359 44.75 0l194.29 194.28c6.177 6.18 9.262 14.271 9.262 22.366 0 8.099-3.091 16.196-9.267 22.373"
         transform="matrix(.03541-.00013.00013.03541 2.98 3.02)"
-        fill="#4d4d4d"
+        fill="#eb3c3c"
       />
     </svg>
   );
 };
-
-const MapImg = forwardRef(({ src, onLoad, ...props }, ref) => {
-  const handleOnLoad = (e) => {
-    const { width, height } = e.target;
-    onLoad?.({ width, height });
-  };
-  return (
-    <img src={src} alt="mapImg" onLoad={handleOnLoad} ref={ref} {...props} />
-  );
-});
 
 const NavigatorMap = ({ src, children }) => {
   const [scale, setScale] = useState(1);
@@ -52,15 +42,16 @@ const NavigatorMap = ({ src, children }) => {
     y: undefined,
   });
   const containerRef = useRef();
-  const mapImgRef = useRef();
+  const mapRef = useRef();
   useWheelScale(containerRef, setScale);
-  useDrag(containerRef, mapImgRef, setMapPosition);
+  useDrag(containerRef, mapRef, setMapPosition);
 
   // 加载地图完成时计算缩放，将地图图片缩小或以原始大小显示在容器中
-  const onMapImgLoad = ({ width: mw, height: mh }) => {
+  const onMapImgLoad = (e) => {
     const container = containerRef.current;
     const { clientWidth: cw, clientHeight: ch } = container;
 
+    const { width: mw, height: mh } = e.target;
     const isHorizontalMap = mw >= mh;
     let scaleTo = 1;
     if (isHorizontalMap) {
@@ -93,22 +84,28 @@ const NavigatorMap = ({ src, children }) => {
       }}
       ref={containerRef}
     >
-      <MapImg
-        src={src}
-        ref={mapImgRef}
+      <div
+        ref={mapRef}
         style={{
-          display: 'block',
-          userSelect: 'none',
+          position: 'absolute',
           transform: `scale(${scale})`,
           transformOrigin: 'center center',
-          position: 'absolute',
           top: mapPosition.y,
           left: mapPosition.x,
         }}
-        onLoad={onMapImgLoad}
-        onDragStart={(e) => e.preventDefault()}
-      />
-      {children}
+      >
+        <img
+          src={src}
+          style={{
+            display: 'block',
+            userSelect: 'none',
+          }}
+          onLoad={onMapImgLoad}
+          onDragStart={(e) => e.preventDefault()}
+          alt="mapImg"
+        />
+        {children}
+      </div>
       <button
         style={{ position: 'absolute', bottom: '1em', right: '1em' }}
         onClick={() => {

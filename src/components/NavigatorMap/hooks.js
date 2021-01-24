@@ -25,7 +25,7 @@ export const useWheelScale = (containerRef, setScale) => {
 };
 
 // 在容器中点击拖动移动地图图片位置
-export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
+export const useDrag = (containerRef, mapRef, setMapPosition) => {
   const dragBasePosition = useRef({ x: null, y: null });
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
 
     const handleDragStart = (e) => {
       // 未载入地图图片时不处理
-      const mapImg = mapImgRef.current;
+      const mapImg = mapRef.current;
       if (!mapImg) return;
 
       const { clientX: x, clientY: y } = e.touches ? e.touches[0] : e;
@@ -64,7 +64,7 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
 
     const handleDragMove = (e) => {
       // 地图需加载完成
-      const mapImg = mapImgRef.current;
+      const mapImg = mapRef.current;
       if (!mapImg) return;
 
       // 需要基坐标
@@ -98,5 +98,5 @@ export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
       document.removeEventListener('mouseup', handleDragEnd);
       document.removeEventListener('touchend', handleDragEnd);
     };
-  }, [containerRef, mapImgRef, setMapPosition]);
+  }, [containerRef, mapRef, setMapPosition]);
 };
