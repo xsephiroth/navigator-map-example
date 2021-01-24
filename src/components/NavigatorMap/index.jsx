@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useDrag, useWheelScale } from './hooks';
 
-export const RobotIcon = ({ position = {} }) => {
+export const RobotIcon = ({ position = {}, ...props }) => {
   return (
     <svg
       style={{
@@ -15,6 +15,7 @@ export const RobotIcon = ({ position = {} }) => {
       }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 22 22"
+      {...props}
     >
       <defs>
         <clipPath>
