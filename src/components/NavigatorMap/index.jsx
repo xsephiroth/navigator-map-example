@@ -13,6 +13,8 @@ const MapImg = forwardRef(({ src, onLoad, ...props }, ref) => {
 
 const NavigatorMap = ({ src, children }) => {
   const [scale, setScale] = useState(1);
+  // 记录scale初始值，用于reset
+  const initScale = useRef(1);
   const [mapPosition, setMapPosition] = useState({
     x: undefined,
     y: undefined,
@@ -38,7 +40,9 @@ const NavigatorMap = ({ src, children }) => {
     }
 
     // 当地图比容器小，使用地图原尺寸，不进行缩放
-    setScale(Math.min(scaleTo, 1));
+    scaleTo = Math.min(scaleTo, 1);
+    initScale.current = scaleTo;
+    setScale(scaleTo);
   };
 
   return (
@@ -72,6 +76,15 @@ const NavigatorMap = ({ src, children }) => {
         onLoad={onMapImgLoad}
         onDragStart={(e) => e.preventDefault()}
       />
+      <button
+        style={{ position: 'absolute', bottom: '1em', right: '1em' }}
+        onClick={() => {
+          setMapPosition({ x: undefined, y: undefined });
+          setScale(initScale.current);
+        }}
+      >
+        reset
+      </button>
     </div>
   );
 };
