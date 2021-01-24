@@ -33,7 +33,7 @@ export const RobotIcon = ({ position = {} }) => {
   );
 };
 
-const NavigatorMap = ({ src, children }) => {
+const NavigatorMap = ({ src, children, onPositionSelect }) => {
   const [scale, setScale] = useState(1);
   // 记录scale初始值，用于reset
   const initScale = useRef(1);
@@ -66,6 +66,12 @@ const NavigatorMap = ({ src, children }) => {
     scaleTo = Math.min(scaleTo, 1);
     initScale.current = scaleTo;
     setScale(scaleTo);
+  };
+
+  // 双击选择导航目录位置
+  const handlePositionSelect = (e) => {
+    const { offsetX: x, offsetY: y } = e.nativeEvent;
+    onPositionSelect?.({ x, y });
   };
 
   return (
@@ -102,6 +108,7 @@ const NavigatorMap = ({ src, children }) => {
           }}
           onLoad={onMapImgLoad}
           onDragStart={(e) => e.preventDefault()}
+          onDoubleClick={handlePositionSelect}
           alt="mapImg"
         />
         {children}
