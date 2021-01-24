@@ -1,5 +1,5 @@
 import { useState, useRef, forwardRef } from 'react';
-import { useDrag } from './hooks';
+import { useDrag, useWheelScale } from './hooks';
 
 const MapImg = forwardRef(({ src, onLoad, ...props }, ref) => {
   const handleOnLoad = (e) => {
@@ -19,17 +19,8 @@ const NavigatorMap = ({ src, children }) => {
   });
   const containerRef = useRef();
   const mapImgRef = useRef();
+  useWheelScale(containerRef, setScale);
   useDrag(containerRef, mapImgRef, setMapPosition);
-
-  // 鼠标滚轮缩放
-  const onWheel = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const isScaleUp = e.deltaY < 0;
-    setScale((prevScale) =>
-      isScaleUp ? Math.min(prevScale + 0.1, 2) : Math.max(prevScale - 0.1, 0.1)
-    );
-  };
 
   // 加载地图完成时计算缩放，将地图图片缩小或以原始大小显示在容器中
   const onMapImgLoad = ({ width: mw, height: mh }) => {
@@ -65,7 +56,6 @@ const NavigatorMap = ({ src, children }) => {
         position: 'relative',
       }}
       ref={containerRef}
-      onWheel={onWheel}
     >
       <MapImg
         src={src}

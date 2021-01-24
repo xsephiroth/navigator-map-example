@@ -1,5 +1,29 @@
 import { useEffect, useRef } from 'react';
 
+// 通过鼠标滚轮缩放地图大小
+export const useWheelScale = (containerRef, setScale) => {
+  useEffect(() => {
+    const container = containerRef.current;
+
+    const onWheel = (e) => {
+      e.preventDefault();
+
+      const isScaleUp = e.deltaY < 0;
+      setScale((prevScale) =>
+        isScaleUp
+          ? Math.min(prevScale + 0.1, 2)
+          : Math.max(prevScale - 0.1, 0.1)
+      );
+    };
+
+    container.addEventListener('wheel', onWheel);
+
+    return () => {
+      container.removeEventListener('wheel', onWheel);
+    };
+  }, [containerRef, setScale]);
+};
+
 // 在容器中点击拖动移动地图图片位置
 export const useDrag = (containerRef, mapImgRef, setMapPosition) => {
   const dragBasePosition = useRef({ x: null, y: null });
